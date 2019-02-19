@@ -50,7 +50,8 @@ public class MainActivity extends AppCompatActivity {
                     for (int i = 0; i<jsonArray.length(); i++){
                         JSONObject match = jsonArray.getJSONObject(i);
                         String series_name = match.getString("series_name");
-                        ListItem item = new ListItem(series_name, "Test");
+                        String status = match.getJSONObject("header").getString("status");
+                        ListItem item = new ListItem(series_name, status);
                         listItems.add(item);
                     }
                     adapter = new MyAdapter(listItems, getApplicationContext());
