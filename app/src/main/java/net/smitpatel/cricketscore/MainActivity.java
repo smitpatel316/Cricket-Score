@@ -29,7 +29,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        recyclerView = (RecyclerView) findViewById(R.id.recyclerView);
+        recyclerView = findViewById(R.id.recyclerView);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         listItems = new ArrayList<>();
@@ -49,9 +49,14 @@ public class MainActivity extends AppCompatActivity {
                     JSONArray jsonArray = response.getJSONArray("matches");
                     for (int i = 0; i<jsonArray.length(); i++){
                         JSONObject match = jsonArray.getJSONObject(i);
-                        String series_name = match.getString("series_name");
+                        String title =  match.getJSONObject("header").getString("match_desc")
+                                + " "
+                                + match.getJSONObject("team1").getString("name")
+                                + " vs "
+                                + match.getJSONObject("team2").getString("name");
                         String status = match.getJSONObject("header").getString("status");
-                        ListItem item = new ListItem(series_name, status);
+                        String matchId = match.getString("match_id");
+                        ListItem item = new ListItem(title, status, matchId);
                         listItems.add(item);
                     }
                     adapter = new MyAdapter(listItems, getApplicationContext());
