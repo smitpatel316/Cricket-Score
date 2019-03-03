@@ -11,10 +11,13 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import com.android.volley.toolbox.JsonObjectRequest;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -27,6 +30,8 @@ public class MainActivity extends AppCompatActivity {
     private RecyclerView.Adapter adapter;
     private List<ListItem> listItems;
     private RequestQueue rq;
+    Handler mHandler;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -37,8 +42,17 @@ public class MainActivity extends AppCompatActivity {
         listItems = new ArrayList<>();
         rq = Volley.newRequestQueue(this);
         jsonParse();
+        this.mHandler = new Handler();
+        m_Runnable.run();
     }
-    private void jsonParse(){
+
+    private final Runnable m_Runnable = new Runnable() {
+        public void run() {
+            MainActivity.this.mHandler.postDelayed(m_Runnable, 10000);
+        }
+    };
+
+    private void jsonParse() {
         final ProgressDialog progressDialog = new ProgressDialog(this);
         progressDialog.setMessage("Loading Current Series...");
         progressDialog.show();
@@ -49,9 +63,9 @@ public class MainActivity extends AppCompatActivity {
                 progressDialog.dismiss();
                 try {
                     JSONArray jsonArray = response.getJSONArray("matches");
-                    for (int i = 0; i<jsonArray.length(); i++){
+                    for (int i = 0; i < jsonArray.length(); i++) {
                         JSONObject match = jsonArray.getJSONObject(i);
-                        String title =  match.getJSONObject("header").getString("match_desc")
+                        String title = match.getJSONObject("header").getString("match_desc")
                                 + " "
                                 + match.getJSONObject("team1").getString("name")
                                 + " vs "
@@ -59,7 +73,7 @@ public class MainActivity extends AppCompatActivity {
                         String status = match.getJSONObject("header").getString("status");
                         String matchId = match.getString("match_id");
                         String details = "";
-                        if(match.has("batsman")) {
+                        if (match.has("batsman")) {
                             JSONArray batsmens = match.getJSONArray("batsman");
                             Log.d("MyApp", batsmens.toString());
 
@@ -71,7 +85,7 @@ public class MainActivity extends AppCompatActivity {
                                         " 6s: " + batsmens.getJSONObject(j).getString("6s") + "\n";
                             }
                         }
-                        if(match.has("bowler")){
+                        if (match.has("bowler")) {
                             JSONObject bowler = match.getJSONArray("bowler").getJSONObject(0);
                             details += bowler.getString("name") +
                                     " Overs: " + bowler.getString("o") +

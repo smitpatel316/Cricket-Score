@@ -2,6 +2,7 @@ package net.smitpatel.cricketscore;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -53,6 +54,8 @@ public class scorecard extends AppCompatActivity {
     private List<ListItem> listItems4;
     private RecyclerView.Adapter adapter3;
     private RecyclerView.Adapter adapter4;
+    Handler mHandler;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -82,7 +85,15 @@ public class scorecard extends AppCompatActivity {
         listItems4 = new ArrayList<>();
         recyclerView.setVisibility(View.INVISIBLE);
         jsonParse();
+        this.mHandler = new Handler();
+        m_Runnable.run();
     }
+
+    private final Runnable m_Runnable = new Runnable() {
+        public void run() {
+            scorecard.this.mHandler.postDelayed(m_Runnable, 10000);
+        }
+    };
 
     private void jsonParse() {
         final ProgressDialog progressDialog = new ProgressDialog(this);
@@ -166,31 +177,31 @@ public class scorecard extends AppCompatActivity {
                     }
                     adapter2 = new MyAdapter(listItems2, getApplicationContext(), "scorecard");
                     JSONArray bowler = matchInfo.getJSONObject(0).getJSONArray("bowlers");
-                    for (int j = 0; j < bowler.length(); j++){
+                    for (int j = 0; j < bowler.length(); j++) {
                         JSONObject currBowler = bowler.getJSONObject(j);
-                        for(int k = 0; k<players.length(); k++){
+                        for (int k = 0; k < players.length(); k++) {
                             if (players.getJSONObject(k).getString("id").equals(currBowler.getString("id"))) {
                                 listItems3.add(new ListItem(players.getJSONObject(k).getString("f_name"),
                                         "Wickets: " + currBowler.getString("w") + " Runs: " + currBowler.getString("r"), "",
                                         " Overs: " + currBowler.getString("o") +
-                                        " Maidens: " + currBowler.getString("m") +
-                                        " Wides: " + currBowler.getString("wd") + 
-                                        " No Balls: " + currBowler.getString("n")));
+                                                " Maidens: " + currBowler.getString("m") +
+                                                " Wides: " + currBowler.getString("wd") +
+                                                " No Balls: " + currBowler.getString("n")));
                             }
                         }
                     }
                     adapter3 = new MyAdapter(listItems3, getApplicationContext(), "scorecard");
                     bowler = matchInfo.getJSONObject(1).getJSONArray("bowlers");
-                    for (int j = 0; j < bowler.length(); j++){
+                    for (int j = 0; j < bowler.length(); j++) {
                         JSONObject currBowler = bowler.getJSONObject(j);
-                        for(int k = 0; k<players.length(); k++){
+                        for (int k = 0; k < players.length(); k++) {
                             if (players.getJSONObject(k).getString("id").equals(currBowler.getString("id"))) {
                                 listItems4.add(new ListItem(players.getJSONObject(k).getString("f_name"),
                                         "Wickets: " + currBowler.getString("w") + " Runs: " + currBowler.getString("r"), "",
                                         " Overs: " + currBowler.getString("o") +
-                                        " Maidens: " + currBowler.getString("m") +
-                                        " Wides: " + currBowler.getString("wd") + 
-                                        " No Balls: " + currBowler.getString("n")));
+                                                " Maidens: " + currBowler.getString("m") +
+                                                " Wides: " + currBowler.getString("wd") +
+                                                " No Balls: " + currBowler.getString("n")));
                             }
                         }
                     }
@@ -217,6 +228,7 @@ public class scorecard extends AppCompatActivity {
         recyclerView.setAdapter(adapter2);
         recyclerView.setVisibility(View.VISIBLE);
     }
+
     public void team3OnClick(View v) {
         recyclerView.setAdapter(adapter4);
         recyclerView.setVisibility(View.VISIBLE);

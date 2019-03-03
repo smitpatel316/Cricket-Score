@@ -3,4 +3,5 @@
     <string name="heading">Heading</string>
     <string name="description">Description</string>
     <string name="more_info">MORE INFO</string>
+    <string name="view_scorecard">View Scorecard</string>
 </resources>
