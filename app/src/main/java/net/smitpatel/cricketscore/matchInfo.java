@@ -4,8 +4,10 @@ import android.app.ActionBar;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Color;
+import android.support.v4.view.GestureDetectorCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
@@ -28,7 +30,7 @@ import java.util.ArrayList;
 
 import static java.lang.Integer.parseInt;
 
-public class matchInfo extends AppCompatActivity {
+public class matchInfo extends AppCompatActivity implements GestureDetector.OnGestureListener{
     public String matchId;
     private RequestQueue rq;
     private static String url;
@@ -41,7 +43,8 @@ public class matchInfo extends AppCompatActivity {
     private TextView team2Name;
     private ListView team2;
     private ArrayList<String> arrayList2;
-    float x1,y1,x2,y2;
+    private GestureDetectorCompat detector;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -65,6 +68,8 @@ public class matchInfo extends AppCompatActivity {
         arrayList2 = new ArrayList<>();
         ArrayAdapter arrayAdapter2 = new ArrayAdapter(this, android.R.layout.simple_list_item_1, arrayList2);
         team2.setAdapter(arrayAdapter2);
+
+        detector = new GestureDetectorCompat(getApplicationContext(), this);
         jsonParse();
     }
     private void jsonParse(){
@@ -90,6 +95,7 @@ public class matchInfo extends AppCompatActivity {
                     String team1NameInfo = response.getJSONObject("team1").getString("name") +
                                         " Line up: ";
                     team1Name.setText(team1NameInfo);
+
                     JSONArray players = response.getJSONArray("players");
                     JSONArray team1 = response.getJSONObject("team1").getJSONArray("squad");
                     for (int i = 0; i<team1.length(); i++){
@@ -125,5 +131,46 @@ public class matchInfo extends AppCompatActivity {
             }
         });
         rq.add(request);
+    }
+
+    @Override
+    public boolean onDown(MotionEvent e) {
+        return false;
+    }
+
+    @Override
+    public void onShowPress(MotionEvent e) {
+
+    }
+
+    @Override
+    public boolean onSingleTapUp(MotionEvent e) {
+        return false;
+    }
+
+    @Override
+    public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
+        return false;
+    }
+
+    @Override
+    public void onLongPress(MotionEvent e) {
+
+    }
+
+    @Override
+    public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
+        if (e1.getX() - e2.getX() > 5 && Math.abs(velocityX) > 5){
+            Intent intent = new Intent(getApplicationContext(), scorecard.class);
+            intent.putExtra("matchId", this.matchId);
+            startActivity(intent);
+        }
+        return true;
+    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        detector.onTouchEvent(event);
+        return super.onTouchEvent(event);
     }
 }

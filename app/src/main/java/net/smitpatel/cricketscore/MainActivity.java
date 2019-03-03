@@ -1,11 +1,13 @@
 package net.smitpatel.cricketscore;
 
 import android.app.ProgressDialog;
+import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -56,10 +58,31 @@ public class MainActivity extends AppCompatActivity {
                                 + match.getJSONObject("team2").getString("name");
                         String status = match.getJSONObject("header").getString("status");
                         String matchId = match.getString("match_id");
-                        ListItem item = new ListItem(title, status, matchId);
+                        String details = "";
+                        if(match.has("batsman")) {
+                            JSONArray batsmens = match.getJSONArray("batsman");
+                            Log.d("MyApp", batsmens.toString());
+
+                            for (int j = 0; j < batsmens.length(); j++) {
+                                details += batsmens.getJSONObject(j).getString("name") +
+                                        " Runs: " + batsmens.getJSONObject(j).getString("r") +
+                                        " Balls: " + batsmens.getJSONObject(j).getString("b") +
+                                        " 4s: " + batsmens.getJSONObject(j).getString("4s") +
+                                        " 6s: " + batsmens.getJSONObject(j).getString("6s") + "\n";
+                            }
+                        }
+                        if(match.has("bowler")){
+                            JSONObject bowler = match.getJSONArray("bowler").getJSONObject(0);
+                            details += bowler.getString("name") +
+                                    " Overs: " + bowler.getString("o") +
+                                    " Maidens: " + bowler.getString("m") +
+                                    " Runs: " + bowler.getString("r") +
+                                    " Wickets: " + bowler.getString("w");
+                        }
+                        ListItem item = new ListItem(title, status, matchId, details);
                         listItems.add(item);
                     }
-                    adapter = new MyAdapter(listItems, getApplicationContext());
+                    adapter = new MyAdapter(listItems, getApplicationContext(), "MainActivity");
                     recyclerView.setAdapter(adapter);
                 } catch (JSONException e) {
                     e.printStackTrace();
