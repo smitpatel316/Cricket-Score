@@ -91,7 +91,7 @@ public class scorecard extends AppCompatActivity {
 
     private final Runnable m_Runnable = new Runnable() {
         public void run() {
-            scorecard.this.mHandler.postDelayed(m_Runnable, 10000);
+            scorecard.this.mHandler.postDelayed(m_Runnable, 5000);
         }
     };
 
